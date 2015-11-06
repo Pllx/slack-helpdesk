@@ -4,6 +4,7 @@
   "description": "Generalized Slack Help Desk Bot",
   "main": "index.js",
   "scripts": {
+    "start-dev": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/petridw/slack-helpdesk/issues"
   },
-  "homepage": "https://github.com/petridw/slack-helpdesk#readme"
+  "homepage": "https://github.com/petridw/slack-helpdesk#readme",
+  "dependencies": {
+    "slackbots": "^0.4.0"
+  }
 }
