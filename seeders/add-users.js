@@ -1,9 +1,4 @@
-var mongoose = require('mongoose');
-var config = require('../util/getConfig')();
 var User = require('./../models/User');
-var Request = require('./../models/Request');
-
-mongoose.connect(config.mongoose.uri, config.mongoose.options);
 
 var users = [
 	{
