@@ -1,11 +1,4 @@
-var mongoose = require('mongoose');
-var config = require('../util/getConfig')();
-var User = require('./../models/User');
-var Request = require('./../models/Request');
-
-mongoose.connect(config.mongoose.uri, config.mongoose.options);
-
-var users = [
+[
 	{
 		"_id": "U06M2F3NU",
 		"username": "jaero",
@@ -168,10 +161,4 @@ var users = [
 		"fullname": "Samara Hernandez",
 		"admin": true
 	}
-];
-
-users.forEach(function(user) {
-  User.create(user, function(err, user) {
-    console.log(user);
-  });
-});
+]

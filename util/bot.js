@@ -8,15 +8,12 @@ function createBot() {
   var bot = new Slack(config.slackbot.token, true, true);
   
   bot.on('open', function() {
-    
-    // bot.postMessageToUser('davidpetri', 'hi', function(data) {
-    //   console.log('message reply');
-    //   console.log(data);
-    // });
     console.log(`Connected to ${bot.team.name} as @${bot.self.name}`);
-    // userController.loadUsers(bot, function(err) {
-      
-    // });
+    
+    userController.loadUsers(bot, function(err) {
+      if (err) return console.error(err);
+      console.log('Done loading users!');
+    });
   });
 
   bot.on('message', function(message) {
@@ -26,20 +23,18 @@ function createBot() {
     // console.log(channel);
     // console.log(user);
     
-    return;
-    
-    async.series([
-      function(next) {
-        userController.findOrCreate(bot, data, next);
-      },
-      function(next) {
-        requestController.createOrResolve(bot, data, next);
-      }
-    ],
-    function (err, results) {
-      if (err) console.error(err);
-      console.log(results);
-    });
+    // async.series([
+    //   function(next) {
+    //     userController.findOrCreate(bot, data, next);
+    //   },
+    //   function(next) {
+    //     requestController.createOrResolve(bot, data, next);
+    //   }
+    // ],
+    // function (err, results) {
+    //   if (err) console.error(err);
+    //   console.log(results);
+    // });
   });
   
   bot.login();

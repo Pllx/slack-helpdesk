@@ -11,3 +11,5 @@ var requestSchema = new Schema({
 });
 
 var Request = mongoose.model('Request', requestSchema);
+
+module.exports = Request;
