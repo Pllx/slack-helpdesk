@@ -1,11 +1,13 @@
 var SlackBot = require('slackbots');
 var getConfig = require('./util/getConfig');
+var mongoose = require('mongoose');
+var config = getConfig(process.env.NODE_ENV);
 
-var config = getConfig(process.env.NODE_ENV).slackbot;
+mongoose.connect(config.mongoose.uri);
 
 var bot = new SlackBot({
-  token: config.token,
-  name: config.name
+  token: config.slackbot.token,
+  name: config.slackbot.name
 });
 
 bot.on('start', function() {
