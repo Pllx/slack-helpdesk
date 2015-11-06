@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/petridw/slack-helpdesk#readme",
   "dependencies": {
+    "async": "^1.5.0",
     "mongoose": "^4.2.4",
-    "slackbots": "^0.4.0"
+    "slack-client": "^1.4.1"
   }
 }
