@@ -5,18 +5,6 @@ var async = require('async');
 
 var userController = {};
 
-userController.findOrCreate = function(bot, user, next) {
-  
-  User.findOne({ _id: user._id }, function(err, user) {
-    if (err) return next(err);
-    if (!user) {
-      return createUser(bot, data, next);
-    }
-    
-    return next(null, user);
-  });
-};
-
 userController.loadUsers = function(bot, next) {
   
   async.forEachOf(bot.users, function(user, key, done){
@@ -28,27 +16,41 @@ userController.loadUsers = function(bot, next) {
       admin: false
     };
     
-    userController.findOrCreate(bot, newUser, function() {
-      done();
+    User.findOrCreate(newUser, function(err, createdUser) {
+      if (err) return done(err);
+      return done();
     });
+    
   }, function(err) {
-      if (err) console.error(err);
+      if (err) return next(err);
       console.log('finished adding users');
-      next();
+      return next();
     });
   
 };
 
-function createUser(bot, data, next) {
-  bot.getUser(data.user, function(data) {
-    console.log(data);
-    
-    // User.create({
-    //   name: dat
-    // });
-    return next(data);
-  });
-
-}
+// userController.findOrCreate = function(bot, user, next) {
+//   
+//   User.findOne({ _id: user._id }, function(err, user) {
+//     if (err) return next(err);
+//     if (!user) {
+//       return createUser(bot, data, next);
+//     }
+//     
+//     return next(null, user);
+//   });
+// };
+// 
+// function createUser(bot, data, next) {
+//   bot.getUser(data.user, function(data) {
+//     console.log(data);
+//     
+//     // User.create({
+//     //   name: dat
+//     // });
+//     return next(data);
+//   });
+// 
+// }
 
 module.exports = userController;
