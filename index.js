@@ -3,7 +3,7 @@ var getConfig = require('./util/getConfig');
 var mongoose = require('mongoose');
 var config = getConfig(process.env.NODE_ENV);
 
-mongoose.connect(config.mongoose.uri);
+mongoose.connect(config.mongoose.uri, config.mongoose.options);
 
 var bot = new SlackBot({
   token: config.slackbot.token,
