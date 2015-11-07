@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Hapi = require('hapi');
 var Inert = require('inert');
-var Bot = require('./util/bot');
+var HelpDeskBot = require('./util/HelpDeskBot');
 var adminController = require('./server/controllers/adminController');
 
 var port = process.env.PORT || 3000;
@@ -11,7 +11,7 @@ var config = getConfig(process.env.NODE_ENV);
 
 mongoose.connect(config.mongoose.uri, config.mongoose.options);
 
-var helpDeskBot = new Bot();
+var helpDeskBot = new HelpDeskBot({ channels: config.slackbot.channels });
 helpDeskBot.login();
 
 var server = new Hapi.Server();
@@ -41,7 +41,15 @@ server.route({
   handler: adminController.getTotals
 });
 
-server.start(function(err) {
+server.register([
+  {
+    register: require('./server/views.js')
+  }
+], function(err) {
   if (err) throw err;
-  console.log('Server running on:',server.info.uri);
+  
+  server.start(function(err) {
+    if (err) throw err;
+    console.log('Server running on:', server.info.uri);
+  });
 });
