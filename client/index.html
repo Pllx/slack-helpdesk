@@ -9,48 +9,65 @@
    text-align : right;
    padding : 3px;
    margin : 1px;
-   border: 1px solid black;
  }
 </style>
 
 <body>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
   <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
-  hi there!
+  Welcome to ZomboCom!
 
   <div class="chart">
-    this is the chart
+    Responses
   </div>
-  this is the end
+  You can do anything at ZomboCom. The only limit is yourself.
 
 
   <script>
 
-    var admins = [];
+  function createSampleAdmins() {
+    var sampleAdmins = [];
     for (var i = 0 ; i < 10; i++) {
       var adminObj = {
         name : 'name' + i,
-        responses : i
+        responses : []
       }
+      for (var j = 0; j < i; j++) {
+        adminObj.responses.push('response'+j);
+      }
+      sampleAdmins.push(adminObj);
+    }
+    return sampleAdmins;
+  }
+
+
+    function countResponses(user) {
+      return user.responses.length;
     }
 
-  //  $.get('/')
+    var admins;
+    $.get('/api/adminTotals', function(data) {
+      admins = data;
+    })
 
-    var max = admins[0].responses;
+    admins = /*admins || */createSampleAdmins();
 
+    var MIN = 0;
+    var max = admins[0].responses.length;
     for (var i = 1; i < admins.length; i++) {
-      if (admins[1].)
+      max = (admins[1].responses.length > max) ? admins[1].responses.length : max;
     }
 
     var x = d3.scale.linear()
-        .domain([0, d3.max(data)])
-        .range([0,500]);
+        .domain([MIN, max])
+        .range([0,50]);
 
     d3.select('.chart')
       .selectAll('div')
         .data(admins)
       .enter().append('div')
-        .style('width', function(d) { return x(d) + "px"})
-        .text(function(d) {return d.name +" "+ d.responses;});
+        .style('width', function(d) { return x(d.responses.length) + "px"})
+        .text(function(d) {return d.name +" "+ d.responses.length;});
   </script>
 </body>
