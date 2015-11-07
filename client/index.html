@@ -26,18 +26,31 @@
 
   <script>
 
-    var data = [1,2,2,3,4,5,7];
+    var admins = [];
+    for (var i = 0 ; i < 10; i++) {
+      var adminObj = {
+        name : 'name' + i,
+        responses : i
+      }
+    }
+
+  //  $.get('/')
+
+    var max = admins[0].responses;
+
+    for (var i = 1; i < admins.length; i++) {
+      if (admins[1].)
+    }
 
     var x = d3.scale.linear()
         .domain([0, d3.max(data)])
-        .range([0,700]);
+        .range([0,500]);
 
-    console.log('test');
     d3.select('.chart')
       .selectAll('div')
-        .data(data)
+        .data(admins)
       .enter().append('div')
         .style('width', function(d) { return x(d) + "px"})
-        .text(function(d) {return d;});
+        .text(function(d) {return d.name +" "+ d.responses;});
   </script>
 </body>
