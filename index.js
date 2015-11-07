@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Hapi = require('hapi');
 var Inert = require('inert');
 var Bot = require('./util/bot');
+var adminController = require('./server/controllers/adminController');
 
 var port = process.env.PORT || 3000;
 
@@ -32,6 +33,12 @@ server.route({
     //res.file('./client/index.html');
     //return res('hello!');
   }
+});
+
+server.route({
+  method: 'GET',
+  path: '/api/adminTotals',
+  handler: adminController.getTotals
 });
 
 server.start(function(err) {
