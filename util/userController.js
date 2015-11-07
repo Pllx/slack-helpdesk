@@ -7,6 +7,8 @@ var userController = {};
 
 userController.loadUsers = function(bot, next) {
   
+  var users = {};
+  
   async.forEachOf(bot.users, function(user, key, done){
     
     var newUser = {
@@ -18,39 +20,16 @@ userController.loadUsers = function(bot, next) {
     
     User.findOrCreate(newUser, function(err, createdUser) {
       if (err) return done(err);
+      users[createdUser._id] = createdUser;
       return done();
     });
     
   }, function(err) {
       if (err) return next(err);
       console.log('finished adding users');
-      return next();
+      return next(null, users);
     });
   
 };
-
-// userController.findOrCreate = function(bot, user, next) {
-//   
-//   User.findOne({ _id: user._id }, function(err, user) {
-//     if (err) return next(err);
-//     if (!user) {
-//       return createUser(bot, data, next);
-//     }
-//     
-//     return next(null, user);
-//   });
-// };
-// 
-// function createUser(bot, data, next) {
-//   bot.getUser(data.user, function(data) {
-//     console.log(data);
-//     
-//     // User.create({
-//     //   name: dat
-//     // });
-//     return next(data);
-//   });
-// 
-// }
 
 module.exports = userController;

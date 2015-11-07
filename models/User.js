@@ -9,6 +9,10 @@ var userSchema = new Schema({
   requests: [{
     type: Schema.Types.ObjectId,
     ref: 'Request'
+  }],
+  closedRequests: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Request'
   }]
 });
 

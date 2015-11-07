@@ -4,10 +4,11 @@ var Schema = mongoose.Schema;
 var requestSchema = new Schema({
   opened: Date,
   respondedTo: Date,
-  requests: [{
+  text: String,
+  user: {
     type: Schema.Types.ObjectId,
-    ref: 'Request'
-  }]
+    ref: 'User'
+  }
 });
 
 var Request = mongoose.model('Request', requestSchema);

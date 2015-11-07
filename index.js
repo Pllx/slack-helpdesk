@@ -5,4 +5,6 @@ var getConfig = require('./util/getConfig');
 var config = getConfig(process.env.NODE_ENV);
 
 mongoose.connect(config.mongoose.uri, config.mongoose.options);
-var helpDeskBot = Bot();
+
+var helpDeskBot = new Bot();
+helpDeskBot.login();
