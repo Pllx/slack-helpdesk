@@ -82,7 +82,7 @@ function handleAdminResponse(user, message, next) {
         
         console.log('result of added request');
         console.log(result);
-        user.closedRequests.push(mongoose.Types.ObjectId(openRequest._id));
+        user.closedRequests.push(openRequest._id);
         
         user.save(function(err, user) {
           if (err) return next(err);
