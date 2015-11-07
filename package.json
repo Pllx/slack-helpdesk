@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "export NODE_ENV=production; node index.js",
-    "start-dev": "export NODE_ENV=development; nodemon index.js",
+    "start-dev": "export NODE_ENV=development; npm run watch-scss & nodemon index.js",
+    "watch-scss": "node-sass -w scss/application.scss client/styles.css",
     "seed": "node seeders",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -29,6 +30,7 @@
     "vision": "^4.0.0"
   },
   "devDependencies": {
+    "node-sass": "^3.4.1",
     "nodemon": "^1.8.1"
   }
 }
