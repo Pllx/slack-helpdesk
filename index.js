@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Hapi = require('hapi');
+var Inert = require('inert');
 var Bot = require('./util/bot');
 
 var port = process.env.PORT || 3000;
@@ -16,17 +17,22 @@ server.connection({
   port : 3000
 });
 
+server.register(Inert, function(err) {
+  if (err) throw err;
+});
+
 server.route({
   method: 'GET',
   path : '/stats',
-  handler : function (req, res) {
-    console.log(req.params);
-    return res('hello!');
+  handler : function (req, reply) {
+    // console.log(req.params);
+    reply.file('./client/index.html');
+    //res.file('./client/index.html');
+    //return res('hello!');
   }
 });
 
 server.start(function(err) {
   if (err) throw err;
-  console.log(server);
   console.log('Server running on:',server.info.uri);
 });
