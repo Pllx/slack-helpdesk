@@ -34,6 +34,10 @@ HelpDeskBot.prototype.handleMessage = function(message) {
   var channel = this.slack.getChannelGroupOrDMByID(message.channel);
   
   if (channel.is_im) return this.handleDM(message, channel);
+  
+  // TODO: Message user and tell them we're ignoring this help request bc it's not
+  // between 9AM-8PM Mon-Sat
+  if (!messageHelpers.isWorkDay()) return console.log('Not during the work day!');
 
   if (!channel.is_channel) {
     console.error('Was not a channel or a DM. Weird.');
