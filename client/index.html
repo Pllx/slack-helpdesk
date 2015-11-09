@@ -16,12 +16,12 @@
   <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
   <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
-  Welcome to ZomboCom!
+  <h1>Welcome to ZomboCom!</h1>
 
   <div class="chart">
-    Responses
+    <h2>Responses</h2>
   </div>
-  You can do anything at ZomboCom. The only limit is yourself.
+  <h4>You can do anything at ZomboCom. The only limit is yourself.</h4>
 
 
   <script>
@@ -30,44 +30,42 @@
     var sampleAdmins = [];
     for (var i = 0 ; i < 10; i++) {
       var adminObj = {
-        name : 'name' + i,
-        responses : []
+        username : 'name' + i,
+        closedRequests : []
       }
       for (var j = 0; j < i; j++) {
-        adminObj.responses.push('response'+j);
+        adminObj.closedRequests.push('response'+j);
       }
       sampleAdmins.push(adminObj);
     }
     return sampleAdmins;
   }
 
-
-    function countResponses(user) {
-      return user.responses.length;
-    }
-
     var admins;
     $.get('/api/adminTotals', function(data) {
       admins = data;
+
+      admins = (!admins || !admins.length) ? admins : createSampleAdmins();
+      console.log(admins);
+
+      var MIN = 0;
+      var max = admins[0].closedRequests.length;
+      for (var i = 1; i < admins.length; i++) {
+        max = (admins[i].closedRequests.length > max) ? admins[i].closedRequests.length : max;
+      }
+
+      var x = d3.scale.linear()
+          .domain([MIN, max])
+          .range([0,500]);
+
+      d3.select('.chart')
+        .selectAll('div')
+          .data(admins)
+        .enter().append('div')
+          .style('width', function(d) { return x(d.closedRequests.length) + "px"})
+          .text(function(d) {return d.username +" "+ d.closedRequests.length;});
+
     })
 
-    admins = /*admins || */createSampleAdmins();
-
-    var MIN = 0;
-    var max = admins[0].responses.length;
-    for (var i = 1; i < admins.length; i++) {
-      max = (admins[1].responses.length > max) ? admins[1].responses.length : max;
-    }
-
-    var x = d3.scale.linear()
-        .domain([MIN, max])
-        .range([0,50]);
-
-    d3.select('.chart')
-      .selectAll('div')
-        .data(admins)
-      .enter().append('div')
-        .style('width', function(d) { return x(d.responses.length) + "px"})
-        .text(function(d) {return d.name +" "+ d.responses.length;});
   </script>
 </body>
