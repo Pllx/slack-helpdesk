@@ -6,7 +6,7 @@ var requestSchema = new Schema({
   respondedTo: Date,
   text: String,
   user: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'User'
   }
 });

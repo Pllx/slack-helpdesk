@@ -26,7 +26,8 @@ requestController.create = function(user, message, next) {
   var newRequest = {
     opened: new Date().toUTCString(),
     respondedTo: null,
-    text: message
+    text: message,
+    user: user.id
   };
   Request.create(newRequest, function(err, request) {
     if (err) return next(err);
@@ -110,15 +111,27 @@ requestController.getOpenRequestForUser = function(userID, next) {
 };
 
 requestController.getAllOpenRequests = function(next) {
-  Requests.find({ respondedTo: null }, function(err, requests) {
+  
+  Request.find({ respondedTo: null }).populate('user').exec(function(err, requests) {
     if (err) return next(err);
-    if (!requests) return next(err, false);
-    
-    next(null, requests);
+    if (!requests) return next(null, false);
+        
+    return next(null, requests);
+  });
+};
+
+requestController.getAllClosedRequestsForAdmin = function(userID, next) {
+  
+  User.findOne({ _id: userID }).populate('closedRequests').exec(function(err, user) {
+    if (err) return next(err);
+    if (!user) return next(null, false);
+        
+    return next(null, user.closedRequests);
   });
 };
 
 requestController.getAllRequestsForUser = function(userID, next) {
+  
   User.findOne({ _id: userID }).populate('requests').exec(function(err, user) {
     if (err) return next(err);
     if (!user) return next(null, false);

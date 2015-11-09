@@ -79,14 +79,16 @@ HelpDeskBot.prototype.handleDM = function(message, channel) {
       if (user.admin) {
         requestController.getAllOpenRequests(function(err, requests) {
           if (err) return console.error(err);
-          
-          if (!requests) {
+
+          if (!requests || requests.length === 0) {
             response = 'There are currently no open help requests.';
           } else {
             response = requests.reduce(function(acc, request, index) {
-              return `${acc}`;
+              return `${acc}\n${index + 1}\t-\t${request.user.username}\t-\t${request.text}\t-\t${request.opened}`;
             }, '');
           }
+          
+          channel.send(response);
         });
       } else {
         requestController.getOpenRequestForUser(user.id, function(err, request) {
@@ -95,7 +97,7 @@ HelpDeskBot.prototype.handleDM = function(message, channel) {
           if (!request) {
             response = 'You currently have no open help requests.';
           } else {
-            var timeAgo = moment().from(request.opened);
+            var timeAgo = moment(request.opened).fromNow();
             response = `You opened a request with the text "${request.text}" ${timeAgo}`;
           }
           
@@ -105,21 +107,41 @@ HelpDeskBot.prototype.handleDM = function(message, channel) {
 
       break;
     case '!history':
-      requestController.getAllRequestsForUser(user.id, function(err, requests) {
-        if (err) return console.error(err);
+    
+      if (user.admin) {
         
-        if (!requests || requests.length === 0) {
-          response = `You've never made a help desk request! You should probably try, I hear it's awesome.`;
-        } else {
-          var numRequests = requests.length;
-          var averageWaitTime = requestHelpers.averageWaitTime(requests);
+        requestController.getAllClosedRequestsForAdmin(user.id, function(err, closedRequests) {
+          if (err) return console.error(err);
           
-          response = `You've submitted ${requests.length} help desk requests and ` +
-                     `the average response time has been ${averageWaitTime} ms.`;
-        }
-        channel.send(response);
-
-      });
+          if (!closedRequests || closedRequests.length === 0) {
+            response = `You've never closed a help desk request. What kind of fellow are you?!`;
+          } else {
+            var averageCloseTime = requestHelpers.averageWaitTime(closedRequests);
+            response = `You've closed ${closedRequests.length} requests and your average ` +
+                       `response time has been ${averageCloseTime}.`;
+          }
+          
+          channel.send(response);
+        });
+        
+      } else {
+        
+        requestController.getAllRequestsForUser(user.id, function(err, requests) {
+          if (err) return console.error(err);
+          
+          if (!requests || requests.length === 0) {
+            response = `You've never made a help desk request! You should probably try, I hear it's awesome.`;
+          } else {
+            var averageWaitTime = requestHelpers.averageWaitTime(requests);
+            
+            response = `You've submitted ${requests.length} help desk requests and ` +
+                       `the average response time has been ${averageWaitTime}.`;
+          }
+          
+          channel.send(response);
+        });
+        
+      }
       break;
     default:
       response = `I don't know what to do with that command! Try \`!history\` or \`!status\`.`;
