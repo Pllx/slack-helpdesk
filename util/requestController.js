@@ -71,7 +71,7 @@ function handleAdminResponse(user, message, next) {
   }
   
   if (student) {
-    requestController.getOpenRequest(student, function(err, openRequest) {
+    requestController.getOpenRequestForUser(student, function(err, openRequest) {
       if (err) return next(err);
       if (!openRequest) return next(null, 'No open requests for ' + student);
       
@@ -98,7 +98,7 @@ function handleAdminResponse(user, message, next) {
     
 }
 
-requestController.getOpenRequest = function(userID, next) {
+requestController.getOpenRequestForUser = function(userID, next) {
   User.findOne({ _id: userID }).populate('requests').exec(function(err, user) {
     if (err) return next(err);
     if (!user) return next(null, false);
@@ -109,7 +109,16 @@ requestController.getOpenRequest = function(userID, next) {
   });
 };
 
-requestController.getAllRequests = function(userID, next) {
+requestController.getAllOpenRequests = function(next) {
+  Requests.find({ respondedTo: null }, function(err, requests) {
+    if (err) return next(err);
+    if (!requests) return next(err, false);
+    
+    next(null, requests);
+  });
+};
+
+requestController.getAllRequestsForUser = function(userID, next) {
   User.findOne({ _id: userID }).populate('requests').exec(function(err, user) {
     if (err) return next(err);
     if (!user) return next(null, false);
@@ -117,9 +126,5 @@ requestController.getAllRequests = function(userID, next) {
     next(null, user.requests);
   });
 };
-
-function getMostRecentOpenRequest(next) {
-  
-}
 
 module.exports = requestController;

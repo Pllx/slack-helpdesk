@@ -76,21 +76,36 @@ HelpDeskBot.prototype.handleDM = function(message, channel) {
   
   switch (message.text) {
     case '!status':
-      requestController.getOpenRequest(user.id, function(err, request) {
-        if (err) return console.error(err);
-        
-        if (!request) {
-          response = 'You currently have no open help requests.';
-        } else {
-          var timeAgo = moment().from(request.opened);
-          response = `You opened a request with the text "${request.text}" ${timeAgo}`;
-        }
-        
-        channel.send(response);
-      });
+      if (user.admin) {
+        requestController.getAllOpenRequests(function(err, requests) {
+          if (err) return console.error(err);
+          
+          if (!requests) {
+            response = 'There are currently no open help requests.';
+          } else {
+            response = requests.reduce(function(acc, request, index) {
+              return `${acc}`;
+            }, '');
+          }
+        });
+      } else {
+        requestController.getOpenRequestForUser(user.id, function(err, request) {
+          if (err) return console.error(err);
+          
+          if (!request) {
+            response = 'You currently have no open help requests.';
+          } else {
+            var timeAgo = moment().from(request.opened);
+            response = `You opened a request with the text "${request.text}" ${timeAgo}`;
+          }
+          
+          channel.send(response);
+        });        
+      }
+
       break;
     case '!history':
-      requestController.getAllRequests(user.id, function(err, requests) {
+      requestController.getAllRequestsForUser(user.id, function(err, requests) {
         if (err) return console.error(err);
         
         if (!requests || requests.length === 0) {
